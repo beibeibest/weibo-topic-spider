@@ -212,7 +212,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
         
         
     while 1:  # 循环条件为1必定成立
-        result = isPresent()
+        result = 1
         # 解决输入验证码无法跳转的问题
         driver.get('https://m.weibo.cn/') 
         print ('判断页面1成功 0失败  结果是=%d' % result )
