@@ -185,11 +185,11 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     print("开始自动登陆，若出现验证码手动验证")
     time.sleep(3)
 
-    elem = driver.find_element_by_xpath("//*[@id='loginName']");
+    elem=driver.find_element("xpath","//*[@id='loginName']");
     elem.send_keys(username)
-    elem = driver.find_element_by_xpath("//*[@id='loginPassword']");
+    elem=driver.find_element("xpath","//*[@id='loginPassword']");
     elem.send_keys(password)
-    elem = driver.find_element_by_xpath("//*[@id='loginAction']");
+    elem=driver.find_element("xpath","//*[@id='loginAction']");
     elem.send_keys(Keys.ENTER)  
     print("暂停20秒，用于验证码验证")
     time.sleep(20)
@@ -252,11 +252,11 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
 
     
 if __name__ == '__main__':
-    username = "" #你的微博登录名
-    password = "" #你的密码
-    driver = webdriver.Chrome()#你的chromedriver的地址
+    username = "19856090227" #你的微博登录名
+    password = "Niu8719731" #你的密码
+    driver = webdriver.Chrome("/usr/local/bin/chromedriver")#你的chromedriver的地址
     driver.implicitly_wait(2)#隐式等待2秒
-    book_name_xls = "test.xls" #填写你想存放excel的路径，没有文件会自动创建
+    book_name_xls = "/Users/niubei/Desktop/计算机/test.xls" #填写你想存放excel的路径，没有文件会自动创建
     sheet_name_xls = '微博数据' #sheet表名
     maxWeibo = 10 #设置最多多少条微博
     keywords = ["肺炎",] # 此处可以设置多个超话关键词
