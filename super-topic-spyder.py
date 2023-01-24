@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 import os
 import requests
 import json
-
+from selenium.webdriver.common.by import By
 import excelSave as save
 
 
@@ -22,7 +22,7 @@ def Transfer_Clicks(browser):
 def isPresent():
     temp =1
     try: 
-        driver.find_elements_by_css_selector('div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
+        driver.find_elements_(By.CSS.SELECTOR,'div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
     except:
         temp =0
     return temp
@@ -36,11 +36,11 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         rows_old = worksheet.nrows  # 获取表格中已存在的数据的行数       
         rid = rows_old
         #用户名
-        weibo_username = elem.find_elements_by_css_selector('h3.m-text-cut')[0].text
+        weibo_username = elem.find_elements(By.CSS.SELECTOR,'h3.m-text-cut')[0].text
         weibo_userlevel = "普通用户"
         #微博等级
         try: 
-            weibo_userlevel_color_class = elem.find_elements_by_css_selector("i.m-icon")[0].get_attribute("class").replace("m-icon ","")
+            weibo_userlevel_color_class = elem.find_elements(By.CSS.SELECTOR,"i.m-icon")[0].get_attribute("class").replace("m-icon ","")
             if weibo_userlevel_color_class == "m-icon-yellowv":
                 weibo_userlevel = "黄v"
             if weibo_userlevel_color_class == "m-icon-bluev":
@@ -58,18 +58,18 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         if save_pic:
             num = get_pic(elem,num)
         #获取分享数，评论数和点赞数               
-        shares = elem.find_elements_by_css_selector('i.m-font.m-font-forward + h4')[0].text
+        shares = elem.find_elements(By.CSS_SELECTOR,'i.m-font.m-font-forward + h4')[0].text
         if shares == '转发':
             shares = '0'
-        comments = elem.find_elements_by_css_selector('i.m-font.m-font-comment + h4')[0].text
+        comments = elem.find_elements(By.CSS_SELECTOR,'i.m-font.m-font-comment + h4')[0].text
         if comments == '评论':
             comments = '0'
-        likes = elem.find_elements_by_css_selector('i.m-icon.m-icon-like + h4')[0].text
+        likes = elem.find_elements(By.CSS_SELECTOR, f'i.m-icon.m-icon-like + h4')[0].text
         if likes == '赞':
             likes = '0'
 
         #发布时间
-        weibo_time = elem.find_elements_by_css_selector('span.time')[0].text
+        weibo_time = elem.find_elements(By.CSS_SELECTOR,'span.time')[0].text
         '''
         print("用户名："+ weibo_username + "|"
               "微博等级："+ weibo_userlevel + "|"
@@ -90,14 +90,14 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
 def get_all_text(elem):
     try:
         #判断是否有“全文内容”，若有则将内容存储在weibo_content中
-        href = elem.find_element_by_link_text('全文').get_attribute('href')
+        href = elem.find_element_(By.LINK_TEXT,'全文').get_attribute('href')
         driver.execute_script('window.open("{}")'.format(href))
         driver.switch_to.window(driver.window_handles[1])
-        weibo_content = driver.find_element_by_class_name('weibo-text').text
+        weibo_content = driver.find_element(By.CLASS_NAME,'weibo-text').text
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
     except:
-        weibo_content = elem.find_elements_by_css_selector('div.weibo-text')\
+        weibo_content = elem.find_elements(By.CSS_SELECTOR,'div.weibo-text')\
                         [0].text
     return weibo_content
 
@@ -105,13 +105,13 @@ def get_pic(elem,num):
     try:
         #获取该条微博中的图片元素,之后遍历每个图片元素，获取图片链接并下载图片
         #如果是多张图片
-        if elem.find_elements_by_css_selector\
-           ('div > div > article > div > div:nth-child(2) > div > ul > li') != [] :
-            pic_links = elem.find_elements_by_css_selector\
-           ('div > div > article > div > div:nth-child(2) > div > ul > li')
+        if elem.find_elements\
+           (By.CSS_SELECTOR,'div > div > article > div > div:nth-child(2) > div > ul > li') != [] :
+            pic_links = elem.find_elements\
+           (By.CSS_SELECTOR,'div > div > article > div > div:nth-child(2) > div > ul > li')
             for pic_link in pic_links:
-                pic_link = pic_link.find_element_by_css_selector\
-                           ('div > img').get_attribute('src')
+                pic_link = pic_link.find_element\
+                           (By.CSS_SELECTOR,'div > img').get_attribute('src')
                 response = requests.get(pic_link)
                 pic = response.content
                 with open(pic_addr + str(num) + '.jpg', 'wb') as file:
@@ -119,8 +119,8 @@ def get_pic(elem,num):
                     num += 1
         #如果图片只有一张
         else:
-            pic_link = elem.find_element_by_css_selector\
-                       ('div > div > article > div > div:nth-child(2) > div > div > img').\
+            pic_link = elem.find_element\
+                       (By.CSS_SELECTOR,'div > div > article > div > div:nth-child(2) > div > div > img').\
                        get_attribute('src')
             response = requests.get(pic_link)
             pic = response.content
@@ -142,7 +142,7 @@ def get_current_weibo_data(elems,book_name_xls,name,yuedu,taolun,maxWeibo,num):
             before = after
             Transfer_Clicks(driver)
             time.sleep(3)
-            elems = driver.find_elements_by_css_selector('div.card.m-panel.card9')
+            elems = driver.find_elements(By.CSS_SELECTOR,'div.card.m-panel.card9')
             print("当前包含微博最大数量：%d,n当前的值为：%d, n值到5说明已无法解析出新的微博" % (len(elems),n))
             after = len(elems)
             if after > before:
@@ -217,7 +217,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
         driver.get('https://m.weibo.cn/') 
         print ('判断页面1成功 0失败  结果是=%d' % result )
         if result == 1:
-            elems = driver.find_elements_by_css_selector('div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
+            elems = driver.find_elements(By.CSS_SELECTOR,'div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
             #return elems #如果封装函数，返回页面
             break
         else:
@@ -227,25 +227,25 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     time.sleep(2)
 
     #搜索关键词
-    elem = driver.find_element_by_xpath("//*[@class='m-text-cut']").click();
+    elem = driver.find_element(By.XPATH,"//*[@class='m-text-cut']").click();
     time.sleep(2)
-    elem = driver.find_element_by_xpath("//*[@type='search']");
+    elem = driver.find_element(By.XPATH,"//*[@type='search']");
     elem.send_keys(keyword)
     elem.send_keys(Keys.ENTER)
     time.sleep(5)
     
     # elem = driver.find_element_by_xpath("//*[@class='box-left m-box-col m-box-center-a']")
     # 修改为点击超话图标进入超话，减少错误
-    elem = driver.find_element_by_xpath("//img[@src ='http://simg.s.weibo.com/20181009184948_super_topic_bg_small.png']")
+    elem = driver.find_element(By.XPATH,"//img[@src ='http://simg.s.weibo.com/20181009184948_super_topic_bg_small.png']")
     elem.click()
     print("超话链接获取完毕，休眠2秒")
     time.sleep(2)
-    yuedu_taolun = driver.find_element_by_xpath("//*[@id='app']/div[1]/div[1]/div[1]/div[4]/div/div/div/a/div[2]/h4[1]").text
+    yuedu_taolun = driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[1]/div[1]/div[4]/div/div/div/a/div[2]/h4[1]").text
     yuedu = yuedu_taolun.split("　")[0]
     taolun = yuedu_taolun.split("　")[1]
     time.sleep(2)
     name = keyword
-    shishi_element = driver.find_element_by_xpath("//*[@class='scroll-box nav_item']/ul/li/span[text()='帖子']")
+    shishi_element = driver.find_element(By.XPATH,"//*[@class='scroll-box nav_item']/ul/li/span[text()='帖子']")
 
     get_current_weibo_data(elems,book_name_xls,name,yuedu,taolun,maxWeibo,num) #爬取实时
     time.sleep(2)
