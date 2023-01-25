@@ -181,7 +181,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     driver.set_window_size(452, 790)
     driver.get('https://m.weibo.cn')
     
-    driver.get("https://passport.weibo.cn/signin/login")
+    driver.get("https://m.weibo.cn/login?backURL=https%3A%2F%2Fm.weibo.cn%2F")
     print("开始自动登陆，若出现验证码手动验证")
     time.sleep(3)
 
