@@ -22,7 +22,7 @@ def Transfer_Clicks(browser):
 def isPresent():
     temp =1
     try: 
-        driver.find_elements_(By.CSS.SELECTOR,'div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
+        driver.find_elements_("css selector",'div.line-around.layout-box.mod-pagination > a:nth-child(2) > div > select > option')
     except:
         temp =0
     return temp
@@ -101,7 +101,7 @@ def get_all_text(elem):
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
     except:
-        weibo_content = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[12]/div/div/div/div/div/div/article/div[2]/div[1]")\
+        weibo_content = elem.find_elements("css selector","div.weibo-text")\
                         [0].text
     return weibo_content
 '''
@@ -180,10 +180,11 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
         print("文件不存在，重新创建")
         value_title = [["rid", "用户名称", "微博等级", "微博内容", "微博转发量","微博评论量","微博点赞","发布时间","搜索关键词","话题名称","话题讨论数","话题阅读数"],]
         save.write_excel_xls(book_name_xls, sheet_name_xls, value_title)
-    
+    '''
     #加载驱动，使用浏览器打开指定网址  
-    driver.set_window_size(496, 790)
+    driver.set_window_size(600, 790)
     driver.get('https://m.weibo.cn')
+    driver.get("https://m.weibo.cn/search?containerid=231583")
     
     driver.get("https://m.weibo.cn/login?backURL=https%3A%2F%2Fm.weibo.cn%2F")
     print("开始自动登陆，若出现验证码手动验证")
@@ -201,7 +202,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     #将提前从chrome控制台中复制来的cookie保存在txt中，转化成name, value形式传给selenium的driver
     #实现自动登录
     #如果txt中的cookie是用selenium保存的，则可以直接使用, 无需转化
-    '''
+    
     driver.delete_all_cookies()
     with open(r'./weibocookie.txt') as file:
         cookies = json.loads(file.read())
@@ -212,7 +213,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     '''
     
         
-        
+       
     while 1:  # 循环条件为1必定成立
         result = 1
         # 解决输入验证码无法跳转的问题
@@ -227,7 +228,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
             time.sleep(20)
 
     time.sleep(2)
-
+    
     #搜索关键词
     driver.get("https://m.weibo.cn/search?containerid=231583")
     elem = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[1]/div/div/div[2]/form/input");
