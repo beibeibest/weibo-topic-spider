@@ -36,7 +36,7 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         rows_old = worksheet.nrows  # 获取表格中已存在的数据的行数       
         rid = rows_old
         #用户名
-        weibo_username = elem.find_elements(By.cssSelector("h3.m-text-cut"))[0].text
+        weibo_username = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[19]/div/div/div[3]/div/div/div/header/div/div/a/h3")[0].text
         
         weibo_userlevel = "普通用户"
         '''
@@ -61,18 +61,18 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         if save_pic:
             num = get_pic(elem,num)
         #获取分享数，评论数和点赞数               
-        shares = elem.find_elements(By.cssSelector('i.m-font.m-font-forward + h4'))[0].text
+        shares = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[21]/div/div/div[10]/div/div/div/footer/div[1]/h4")[0].text
         if shares == '转发':
             shares = '0'
-        comments = elem.find_elements(By.cssSelector('i.m-font.m-font-comment + h4'))[0].text
+        comments = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[19]/div/div/div[3]/div/div/div/footer/div[2]/h4")[0].text
         if comments == '评论':
             comments = '0'
-        likes = elem.find_elements(By.cssSelector( f'i.m-icon.m-icon-like + h4'))[0].text
+        likes = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[21]/div/div/div[4]/div/div/div/footer/div[3]/h4")[0].text
         if likes == '赞':
             likes = '0'
 
         #发布时间
-        weibo_time = elem.find_elements(By.cssSelector('span.time'))[0].text
+        weibo_time = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[22]/div/div/div[2]/div/div/div/header/div/div/h4/span[1]")[0].text
         '''
         print("用户名："+ weibo_username + "|"
               "微博等级："+ weibo_userlevel + "|"
@@ -94,14 +94,14 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
 def get_all_text(elem):
     try:
         #判断是否有“全文内容”，若有则将内容存储在weibo_content中
-        href = elem.find_element_(By.LINK_TEXT,'全文').get_attribute('href')
+        href = elem.find_element_("link text",'全文').get_attribute('href')
         driver.execute_script('window.open("{}")'.format(href))
         driver.switch_to.window(driver.window_handles[1])
-        weibo_content = driver.find_element(By.CLASS_NAME,'weibo-text').text
+        weibo_content = driver.find_element("class name",'weibo-text').text
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
     except:
-        weibo_content = elem.find_elements(By.cssSelector('div.weibo-text'))\
+        weibo_content = elem.find_elements("xpath","//*[@id='app']/div[1]/div[1]/div[12]/div/div/div/div/div/div/article/div[2]/div[1]")\
                         [0].text
     return weibo_content
 '''
@@ -193,8 +193,8 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     elem.send_keys(username)
     elem=driver.find_element("xpath","//*[@id='app']/div[1]/div/div/a");
     elem.click() 
-    print("暂停50秒，用于验证码验证")
-    time.sleep(50)
+    print("暂停60秒，用于验证码验证")
+    time.sleep(60)
     
     
     # 添加cookie
@@ -238,6 +238,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     
     # elem = driver.find_element_by_xpath("//*[@class='box-left m-box-col m-box-center-a']")
     # 修改为点击超话图标进入超话，减少错误
+    time.sleep(10)
     elem = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[3]/div/div/div[3]/div/div/div[2]/div/img")
     elem.click()
     print("超话链接获取完毕，休眠2秒")
