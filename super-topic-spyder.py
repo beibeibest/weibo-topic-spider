@@ -178,21 +178,19 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
         save.write_excel_xls(book_name_xls, sheet_name_xls, value_title)
     
     #加载驱动，使用浏览器打开指定网址  
-    driver.set_window_size(452, 790)
+    driver.set_window_size(496, 790)
     driver.get('https://m.weibo.cn')
     
     driver.get("https://m.weibo.cn/login?backURL=https%3A%2F%2Fm.weibo.cn%2F")
     print("开始自动登陆，若出现验证码手动验证")
     time.sleep(3)
 
-    elem=driver.find_element("xpath","//*[@id='loginName']");
+    elem=driver.find_element("xpath","//*[@id='app']/div[1]/div/div/form/div/input");
     elem.send_keys(username)
-    elem=driver.find_element("xpath","//*[@id='loginPassword']");
-    elem.send_keys(password)
-    elem=driver.find_element("xpath","//*[@id='loginAction']");
-    elem.send_keys(Keys.ENTER)  
-    print("暂停20秒，用于验证码验证")
-    time.sleep(20)
+    elem=driver.find_element("xpath","//*[@id='app']/div[1]/div/div/a");
+    elem.click() 
+    print("暂停50秒，用于验证码验证")
+    time.sleep(50)
     
     
     # 添加cookie
@@ -227,25 +225,25 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     time.sleep(2)
 
     #搜索关键词
-    elem = driver.find_element(By.XPATH,"//*[@class='m-text-cut']").click();
+    driver.get("https://m.weibo.cn/search?containerid=231583")
+    elem = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[1]/div/div/div[2]/form/input");
     time.sleep(2)
-    elem = driver.find_element(By.XPATH,"//*[@type='search']");
     elem.send_keys(keyword)
     elem.send_keys(Keys.ENTER)
     time.sleep(5)
     
     # elem = driver.find_element_by_xpath("//*[@class='box-left m-box-col m-box-center-a']")
     # 修改为点击超话图标进入超话，减少错误
-    elem = driver.find_element(By.XPATH,"//img[@src ='http://simg.s.weibo.com/20181009184948_super_topic_bg_small.png']")
+    elem = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[3]/div/div/div[3]/div/div/div[2]/div/img")
     elem.click()
     print("超话链接获取完毕，休眠2秒")
     time.sleep(2)
-    yuedu_taolun = driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[1]/div[1]/div[4]/div/div/div/a/div[2]/h4[1]").text
+    yuedu_taolun = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[1]/div[4]/div/div/div/a/div[2]/h4[1]").text
     yuedu = yuedu_taolun.split("　")[0]
     taolun = yuedu_taolun.split("　")[1]
     time.sleep(2)
     name = keyword
-    shishi_element = driver.find_element(By.XPATH,"//*[@class='scroll-box nav_item']/ul/li/span[text()='帖子']")
+    shishi_element = driver.find_element("xpath","//*[@id='app']/div[1]/div[1]/div[2]/div[2]/div[1]/div/div/div/ul/li[1]/span")
 
     get_current_weibo_data(elems,book_name_xls,name,yuedu,taolun,maxWeibo,num) #爬取实时
     time.sleep(2)
@@ -253,13 +251,13 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
     
 if __name__ == '__main__':
     username = "19856090227" #你的微博登录名
-    password = "Niu8719731" #你的密码
+    password = "" #密码
     driver = webdriver.Chrome("/usr/local/bin/chromedriver")#你的chromedriver的地址
     driver.implicitly_wait(2)#隐式等待2秒
     book_name_xls = "/Users/niubei/Desktop/计算机/test.xls" #填写你想存放excel的路径，没有文件会自动创建
     sheet_name_xls = '微博数据' #sheet表名
     maxWeibo = 10 #设置最多多少条微博
-    keywords = ["肺炎",] # 此处可以设置多个超话关键词
+    keywords = ["数字藏品",] # 此处可以设置多个超话关键词
     num = 1
     save_pic = False  #设置是否同时爬取微博图片，默认不爬取
     pic_addr = 'img/' #设置自己想要放置图片的路径
