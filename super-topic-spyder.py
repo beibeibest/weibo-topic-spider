@@ -36,11 +36,13 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         rows_old = worksheet.nrows  # 获取表格中已存在的数据的行数       
         rid = rows_old
         #用户名
-        weibo_username = elem.find_elements(By.CSS.SELECTOR,'h3.m-text-cut')[0].text
+        weibo_username = elem.find_elements(By.cssSelector("h3.m-text-cut"))[0].text
+        
         weibo_userlevel = "普通用户"
+        '''
         #微博等级
         try: 
-            weibo_userlevel_color_class = elem.find_elements(By.CSS.SELECTOR,"i.m-icon")[0].get_attribute("class").replace("m-icon ","")
+            weibo_userlevel_color_class = elem.find_elements(By.cssSelector("img.m-icon"))[0].get_attribute("class").replace("m-icon ","")
             if weibo_userlevel_color_class == "m-icon-yellowv":
                 weibo_userlevel = "黄v"
             if weibo_userlevel_color_class == "m-icon-bluev":
@@ -51,6 +53,7 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
                 weibo_userlevel = "微博达人"     
         except:
             weibo_userlevel = "普通用户"
+        '''
         #微博内容
         #点击“全文”，获取完整的微博文字内容
         weibo_content = get_all_text(elem)
@@ -58,18 +61,18 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         if save_pic:
             num = get_pic(elem,num)
         #获取分享数，评论数和点赞数               
-        shares = elem.find_elements(By.CSS_SELECTOR,'i.m-font.m-font-forward + h4')[0].text
+        shares = elem.find_elements(By.cssSelector('i.m-font.m-font-forward + h4'))[0].text
         if shares == '转发':
             shares = '0'
-        comments = elem.find_elements(By.CSS_SELECTOR,'i.m-font.m-font-comment + h4')[0].text
+        comments = elem.find_elements(By.cssSelector('i.m-font.m-font-comment + h4'))[0].text
         if comments == '评论':
             comments = '0'
-        likes = elem.find_elements(By.CSS_SELECTOR, f'i.m-icon.m-icon-like + h4')[0].text
+        likes = elem.find_elements(By.cssSelector( f'i.m-icon.m-icon-like + h4'))[0].text
         if likes == '赞':
             likes = '0'
 
         #发布时间
-        weibo_time = elem.find_elements(By.CSS_SELECTOR,'span.time')[0].text
+        weibo_time = elem.find_elements(By.cssSelector('span.time'))[0].text
         '''
         print("用户名："+ weibo_username + "|"
               "微博等级："+ weibo_userlevel + "|"
@@ -87,6 +90,7 @@ def insert_data(elems,path,name,yuedu,taolun,num,save_pic):
         save.write_excel_xls_append_norepeat(book_name_xls, value1)
 
 #获取“全文”内容
+        
 def get_all_text(elem):
     try:
         #判断是否有“全文内容”，若有则将内容存储在weibo_content中
@@ -97,10 +101,10 @@ def get_all_text(elem):
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
     except:
-        weibo_content = elem.find_elements(By.CSS_SELECTOR,'div.weibo-text')\
+        weibo_content = elem.find_elements(By.cssSelector('div.weibo-text'))\
                         [0].text
     return weibo_content
-
+'''
 def get_pic(elem,num):
     try:
         #获取该条微博中的图片元素,之后遍历每个图片元素，获取图片链接并下载图片
@@ -130,7 +134,7 @@ def get_pic(elem,num):
     except Exception as e:
         print(e)
     return num
-    
+    '''
 #获取当前页面的数据
 def get_current_weibo_data(elems,book_name_xls,name,yuedu,taolun,maxWeibo,num):
     #开始爬取数据
@@ -250,7 +254,7 @@ def spider(username,password,book_name_xls,sheet_name_xls,keyword,maxWeibo,num,s
 
     
 if __name__ == '__main__':
-    username = "19856090227" #你的微博登录名
+    username = "18726085281" #你的微博登录名
     password = "" #密码
     driver = webdriver.Chrome("/usr/local/bin/chromedriver")#你的chromedriver的地址
     driver.implicitly_wait(2)#隐式等待2秒
