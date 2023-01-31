@@ -99,7 +99,7 @@ def spider(book_name_xls,sheet_name_xls,maxWeibo,num):
         print("文件已存在")
     else:
         print("文件不存在，重新创建")
-        value_title = [["rid", "用户名称", "微博等级", "微博内容", "微博转发量","微博评论量","微博点赞","发布时间","搜索关键词","话题名称","话题讨论数","话题阅读数"],]
+        value_title = [["rid", "用户名称", "微博内容", "微博转发量","微博评论量","微博点赞","发布时间","话题阅读数","话题讨论数"],]
         save.write_excel_xls(book_name_xls, sheet_name_xls, value_title)
 
     
